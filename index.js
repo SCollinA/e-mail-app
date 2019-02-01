@@ -53,7 +53,7 @@ app.post('/contactKelly', (req, res) => {
             from: 'An Example <' + contactEmail + '>', // this is being overwritten by gmail
             to: 'collin.argo@gmail.com',
             subject: 'art gallery contact',
-            text: `${name}${message}${artwork}` 
+            text: `${name}. ${message}. ${artwork}` 
         }, (error, info) => {
             if (error) { res.json({success: false, error, info})
             } else { res.json({success: true, info}) }
