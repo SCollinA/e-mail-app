@@ -39,17 +39,52 @@ app.post('/contactKelly', (req, res) => {
     console.log('received request')
     console.log(req.body)
     const { name, email, message, artwork } = req.body
-    transporter.sendMail({
-        from: 'collin.argo@gmail.com',
-        to: 'collin.argo@gmail.com',
-        subject: 'art-gallery contact',
-        text: `${name}${email}${message}${artwork}`
-    }, (err, info) => {
-        console.log(err)
-        console.log(info.envelope)
-        console.log(info.messageId)
-        res.send(info)
-    });
+    const email = 'hi@collinargo.com'
+
+    const jwtClient = new google.auth.JWT(
+        serviceKey.client_email,
+        null,
+        serviceKey.private_key,
+        ['https://mail.google.com/'],
+        null,
+        serviceKey.private_key_id
+    )
+
+    jwtClient.authorize((error, tokens) => {
+        if (error) {
+            console.log('could not authorize', error)
+            res.json({success: false, error: error})
+            return
+        }
+
+        console.log('Successfully got access token! token: ', tokens)
+        
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                type: 'OAuth2',
+                user: email,
+                serviceClient: serviceKey.client_id,
+                privateKey: serviceKey.private_key,
+                accessToken: tokens.access_token,
+                expires: tokens.expiry_date
+            }
+        })
+
+        console.log('checking the transporter', transporter)
+
+        transporter.sendMail({
+            from: 'An Example <' + email + '>',
+            to: 'collin.argo@gmail.com',
+            subject: 'art gallery contact',
+            text: `` 
+        }, (error, info) => {
+            if (error) { res.json({success: false, error, info})
+            } else { res.json({success: true, info}) }
+        })
+    })
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
