@@ -7,8 +7,24 @@ const serviceKey = require('./service_key.json')
 
 const app = express()
 const port = 1961
+
+// Need the stuff below to proxy for development or production if that's how you wanna roll
+const cors = require('cors')
+const whitelist = ['http://localhost:8000']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions))
+
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+app.use(express.static('public'))
 
 app.post('/contactKelly', (req, res) => {
     console.log('received request')
