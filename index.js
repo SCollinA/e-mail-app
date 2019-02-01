@@ -29,7 +29,7 @@ let transporter = nodemailer.createTransport({
     // service: 'gmail',
     auth: {
         type: 'OAUTH2',
-        user: process.env.E_MAIL, // generated ethereal user
+        user: process.env.E_MAIL,
         serviceClient: process.env.SERVICE_CLIENT,
         privateKey: process.env.PRIVATE_KEY,
         pass: 'notasecret'
@@ -41,7 +41,7 @@ app.post('/contactKelly', (req, res) => {
     console.log(req.body)
     const { name, email, message, artwork } = req.body
     transporter.sendMail({
-        from: 'collinargo@gmail.com',
+        from: 'collin.argo@gmail.com',
         to: 'collin.argo@gmail.com',
         subject: 'art-gallery contact',
         text: `${name}${email}${message}${artwork}`
