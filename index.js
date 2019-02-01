@@ -14,6 +14,7 @@ app.post('/contactKelly', (req, res) => {
     console.log('received request')
     console.log(req.body)
     const { name, contactEmail, message, artwork } = req.body
+
     const email = 'hi@collinargo.com'
 
     const jwtClient = new google.auth.JWT(
@@ -49,7 +50,7 @@ app.post('/contactKelly', (req, res) => {
         })
 
         transporter.sendMail({
-            from: 'An Example <' + contactEmail + '>',
+            from: 'An Example <' + contactEmail + '>', // this is being overwritten by gmail
             to: 'collin.argo@gmail.com',
             subject: 'art gallery contact',
             text: `${name}${message}${artwork}` 
